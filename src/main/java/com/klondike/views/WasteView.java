@@ -1,5 +1,7 @@
 package com.klondike.views;
 
+import java.util.Iterator;
+
 import com.klondike.models.Card;
 import com.klondike.models.Waste;
 
@@ -7,7 +9,7 @@ public class WasteView {
 
 	private CardView cardView;
 
-	private static String EMPTY = "<vacio>";
+	private static final String EMPTY = "<vacio>";
 	
 	WasteView(){
 		this.cardView = new CardView();
@@ -23,11 +25,9 @@ public class WasteView {
 
 	private String getWasteRepresentation(Waste waste) {
 		StringBuilder representationBuilder = new StringBuilder();
-		Waste wasteTmp = waste;
-		Card cardTmp;
-		while(!wasteTmp.isEmpty())
-		{
-			cardTmp = wasteTmp.getWaste().popLastCard();
+		Card cardTmp; 
+		for(Iterator<Card> itr = waste.getWaste().getCardStack().descendingIterator(); itr.hasNext();)  {
+			cardTmp = (Card) itr.next();
 			representationBuilder.append(cardView.render(cardTmp));
 		}
 		return representationBuilder.toString();

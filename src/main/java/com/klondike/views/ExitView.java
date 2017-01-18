@@ -12,6 +12,7 @@ public class ExitView {
 	public void interact(ExitController exitController)
 	{
 		IO.instance().writeln("Adios!!!");
+		exitController.exit();
 	}
 
 }

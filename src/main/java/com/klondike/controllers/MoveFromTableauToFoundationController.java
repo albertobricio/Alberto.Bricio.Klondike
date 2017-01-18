@@ -14,15 +14,26 @@ public class MoveFromTableauToFoundationController extends OperationController{
 		subject.register(observer);
 	}
 	
-	public void canMove(Game game)
+	public void isFinish()
+	{
+		if(this.finishAllSuits())
+		{
+			subject.end();
+		}
+	}
+	
+	public boolean canMove(Game game, int numTableau)
 	{
 		assert game != null;
 		
+		return game.canMoveToFoundation(game.getTableau(numTableau).getTableau());
 	}
 
-	public void move(Game game) {
+	public void move(Game game, int numTableau) 
+	{
 		assert game != null;
 		
+		game.moveToFoundation(game.getTableau(numTableau).getTableau());
 	}
 
 	@Override

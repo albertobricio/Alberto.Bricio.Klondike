@@ -26,6 +26,7 @@ public class GameView {
 	
 	public void render()
 	{
+		IO.instance().writeln("===========================");
 		IO.instance().writeln("Baraja: " + deckView.render(game.getGameDeck()));
 		IO.instance().writeln("Descarte: " + wasteView.render(game.getGameWaste()));
 		IO.instance().writeln("Palo oros: " + foundationView.render(game.getCoinsFoundation()));

@@ -21,6 +21,14 @@ public class MoveFromWasteToFoundationController extends OperationController{
 		return game.canMoveToFoundation(game.getGameWaste().getWaste());
 	}
 	
+	public void isFinish()
+	{
+		if(this.finishAllSuits())
+		{
+			subject.end();
+		}
+	}
+	
 	public void move(Game game) {
 		assert game != null;
 		

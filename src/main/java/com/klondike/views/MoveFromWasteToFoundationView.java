@@ -1,7 +1,6 @@
 package com.klondike.views;
 
 import com.klondike.controllers.MoveFromWasteToFoundationController;
-import com.klondike.utils.IO;
 
 public class MoveFromWasteToFoundationView {
 	
@@ -19,7 +18,6 @@ public class MoveFromWasteToFoundationView {
 	
 	public void interact(MoveFromWasteToFoundationController moveFromWasteToFoundationController)
 	{
-		IO.instance().writeln("===========================");
 		if (moveFromWasteToFoundationController.canMove(moveFromWasteToFoundationController.getGame()))
 		{
 			moveFromWasteToFoundationController.move(moveFromWasteToFoundationController.getGame());

@@ -24,5 +24,4 @@ public interface OperationControllerVisitor {
 
 	void visit(OptionController optionController);
 	
-
 }

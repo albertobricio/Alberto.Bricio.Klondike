@@ -22,11 +22,11 @@ public class MoveFromDeckToWasteController extends OperationController{
 		
 		if(game.getGameDeck().size() < NUM_MAX_CARDS_TO_MOVE_FROM_DECK)
 		{
-			game.moveNumCards(game.getGameDeck(), game.getGameWaste(), game.getGameDeck().size());
+			game.moveNumCards(game.getGameDeck().getDeck(), game.getGameWaste().getWaste(), game.getGameDeck().size());
 		}
 		else
 		{
-			game.moveNumCards(game.getGameDeck(), game.getGameWaste(), NUM_MAX_CARDS_TO_MOVE_FROM_DECK);
+			game.moveNumCards(game.getGameDeck().getDeck(), game.getGameWaste().getWaste(), NUM_MAX_CARDS_TO_MOVE_FROM_DECK);
 		}
 	}
 	

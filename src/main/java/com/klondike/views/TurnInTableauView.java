@@ -1,6 +1,7 @@
 package com.klondike.views;
 
 import com.klondike.controllers.TurnInTableauController;
+import com.klondike.utils.ClosedInterval;
 import com.klondike.utils.IO;
 
 public class TurnInTableauView extends AskUserView{
@@ -11,6 +12,10 @@ private MenuView menuView;
 	
 	private ErrorView errorView;
 	
+    private static final int FIRST_TABLEAU = 1;
+	
+	private static final int LAST_TABLEAU = 7;
+	
 	public TurnInTableauView()
 	{
 		this.menuView = new MenuView();
@@ -19,9 +24,10 @@ private MenuView menuView;
 	
 	public void interact(TurnInTableauController turnInTableauController)
 	{
+		ClosedInterval ci = new ClosedInterval(FIRST_TABLEAU, LAST_TABLEAU);
 		int tableauNumber;
-		IO.instance().writeln("===========================");
 		tableauNumber = this.ask();
+		assert ci.includes(tableauNumber);
 		if(turnInTableauController.canTurn(turnInTableauController.getGame(), tableauNumber))
 		{
 			turnInTableauController.turn(turnInTableauController.getGame(), tableauNumber);

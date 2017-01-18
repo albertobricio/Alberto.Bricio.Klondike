@@ -9,7 +9,7 @@ public class TableauView {
 
 	private CardView cardView;
 	
-	private static final String empty = "<vacio>";
+	private static final String EMPTY = "<vacio>";
 	
 	TableauView()
 	{
@@ -20,7 +20,7 @@ public class TableauView {
 		
 		if(tableau.isEmpty())
 		{
-			return empty;
+			return EMPTY;
 		}
 		else
 		{

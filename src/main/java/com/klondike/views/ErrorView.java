@@ -11,11 +11,6 @@ public class ErrorView {
 	{
 		this.cardView = new CardView();
 	}
-
-	public void visualizeIncorrectOptionError()
-	{
-		IO.instance().writeln("ERROR!!! La opcion debe ser entre 1 y 9 inclusives");
-	}
 	
 	public void visualizeTurningTurnedCardError()
 	{
@@ -25,6 +20,11 @@ public class ErrorView {
 	public void visualizeMovementToFoundationError()
 	{
 		IO.instance().writeln("ERROR!!! No se puede apilar la carta en la pila.");
+	}
+	
+	public void visualizeMovementToTableauError()
+	{
+		IO.instance().writeln("ERROR!!! No se puede apilar la carta en la escalera.");
 	}
 	
 	public void visualizeMovementNotPossibleError(Card cardToPush, Card downCard)

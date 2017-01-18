@@ -1,10 +1,9 @@
 package com.klondike.controllers.logic;
 import com.klondike.controllers.OperationController;
-import com.klondike.controllers.OperationControllerBuilder;
 
 class FinalState extends State {
 
-	FinalState(StatesBuilder statesBuilder, OperationControllerBuilder operationControllerBuilder) {
+	FinalState(StatesBuilder statesBuilder) {
 		super(statesBuilder);
 	}
 

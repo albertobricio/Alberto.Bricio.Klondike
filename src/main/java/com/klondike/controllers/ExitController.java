@@ -13,6 +13,11 @@ public class ExitController extends OperationController{
 		subject = new Subject();
 		subject.register(observer);
 	}
+	
+	public void exit()
+	{
+		subject.end();
+	}
 
 	@Override
 	public void accept(OperationControllerVisitor operationControllerVisitor) {

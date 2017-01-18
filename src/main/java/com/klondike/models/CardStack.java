@@ -37,13 +37,6 @@ public class CardStack {
 		return this.cardPile.removeLast();
 	}
 
-	public void addCardStackToTop(CardStack cardPile) {
-		for (int i = 0; i < cardPile.cardStackSize(); i++) {
-			Card cardToAdd = cardPile.popLastCard();
-			addCardToFirst(cardToAdd);
-		}
-	}
-
 	public CardStack popCardStack(int numCards) {
 		CardStack cardPilePopped = new CardStack();
 		for (int i = 0; i < numCards; i++) {

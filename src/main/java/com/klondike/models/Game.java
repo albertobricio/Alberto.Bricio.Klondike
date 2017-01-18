@@ -1,5 +1,7 @@
 package com.klondike.models;
 
+import java.util.Iterator;
+
 public class Game {
 	
 	private Deck deck;
@@ -31,8 +33,6 @@ public class Game {
 		batonsFoundation = new Foundation(Suit.BATONS);
 		coinsFoundation = new Foundation(Suit.COINS);
 		
-		tableaus = new Tableau[NUM_TABLEAUS];
-		
 		initDeck();
 		initTableaus();
 	}
@@ -47,6 +47,11 @@ public class Game {
 	
 	public Tableau getTableau(int numberTableau) {
 		return tableaus[numberTableau - 1];
+	}
+	
+	public void setTableau(Tableau tableau, int numberTableau)
+	{
+		this.tableaus[numberTableau - 1] = tableau;
 	}
 	
 	public void setSwordsFoundation(Foundation foundation)
@@ -111,7 +116,24 @@ public class Game {
 		case SWORDS:
 			return getSwordsFoundation();
 		case CUPS:
+			return getCupsFoundation();
+		default:
+			return null;
+		}
+	}
+	
+	public Foundation getFoundationByNumber(int foundationNumber)
+	{
+		switch(foundationNumber)
+		{
+		case 1:
+			return getCoinsFoundation();
+		case 2:
+			return getCupsFoundation();
+		case 3:
 			return getSwordsFoundation();
+		case 4:
+			return getBatonsFoundation();
 		default:
 			return null;
 		}
@@ -143,8 +165,15 @@ public class Game {
 		Foundation foundation;
 		
 		foundation = getFoundationBySuit(cardStack.showTopCard().getSuit());
-		return (foundation.getFoundation().showTopCard().getFigureNumberValue() == cardStack.showTopCard().getFigureNumberValue() - 1
-				|| (cardToMoveIsFirstFoundationCard(cardStack.showTopCard(), foundation)));
+		
+		if(foundation.isEmpty())
+		{
+			return cardToMoveIsFirstFoundationCard(cardStack.showTopCard(), foundation);
+		}
+		else
+		{
+			return cardToMoveIsFoundationCard(cardStack.showTopCard(), foundation);
+		}
 	}
 	
 	public void moveToFoundation(CardStack cardStack)
@@ -159,13 +188,67 @@ public class Game {
 		setFoundationBySuit(cardToMove.getSuit(), foundation);
 	}
 	
-	public void moveNumCards(Deck deck, Waste waste, int numCards)
+	public void moveToTableau(CardStack cardStack, int tableauNumber)
+	{
+		Tableau tableau;
+		Card cardToMove;
+		
+		tableau = getTableau(tableauNumber);
+		
+		cardToMove = cardStack.popFirstCard();
+		tableau.getTableau().addCardToFirst(cardToMove);
+		setTableau(tableau, tableauNumber);
+	}
+	
+	public void moveNumCards(CardStack cardStackOrigin, CardStack cardStackDestiny, int numCards)
 	{
         Card cardToMove;
 		for (int i = 0; i < numCards; i++)
 		{
-			cardToMove = deck.getDeck().popFirstCard();
-			waste.getWaste().addCardToFirst(cardToMove);
+			cardToMove = cardStackOrigin.popFirstCard();
+			cardStackDestiny.addCardToFirst(cardToMove);
+		}
+	}
+	
+	public boolean canMoveNumCardsToTableau(CardStack cardStackOrigin, Tableau tableau, int numCards)
+	{
+        Card cardToMove;
+        CardStack cardStackTmp;
+        int cardCounter = 0;
+        for(Iterator<Card> itr = cardStackOrigin.getCardStack().descendingIterator(); itr.hasNext();)  {
+        	cardToMove = (Card) itr.next();
+        	cardCounter++;
+        	if(cardCounter == (cardStackOrigin.cardStackSize() - numCards + 1))
+        	{
+        		cardStackTmp = new CardStack();
+    			cardStackTmp.addCardToFirst(cardToMove);
+        		if(!tableau.isEmpty() && !tableau.getTableau().getCardStack().getFirst().isTurned())
+        		{
+        			return canPushCardInTableau(tableau, cardStackTmp);
+        		}
+        		else if(tableau.isEmpty())
+        		{
+        			return canPushCardInEmptyTableau(cardStackTmp, tableau);
+        		}
+        		break;
+        	}
+		}
+		return false;
+	}
+	
+	public void moveNumCardsToTableau(CardStack cardStackOrigin, CardStack cardStackDestiny, int numCards)
+	{
+		Card cardToMove;
+		CardStack cardStackTmp = new CardStack();
+		for (int i = 0; i < numCards; i++)
+		{
+			cardToMove = cardStackOrigin.popFirstCard();
+			cardStackTmp.addCardToFirst(cardToMove);
+		} 
+		while(!cardStackTmp.isEmpty())
+		{
+			cardToMove = cardStackTmp.popFirstCard();
+			cardStackDestiny.addCardToFirst(cardToMove);
 		}
 	}
 	
@@ -179,9 +262,15 @@ public class Game {
 		return foundation.isEmpty() && cardToMove.getFigureCharValue() == 'A';
 	}
 	
-	private static boolean canPushCardInEmptyTableau (Card card, Tableau tableau)
+	public boolean cardToMoveIsFoundationCard (Card cardToMove, Foundation foundation)
 	{
-		return tableau.isEmpty() && card.getFigureCharValue() == 'K';
+		return  cardToMove.getSuit() == foundation.getFoundationSuit() &&
+				foundation.getFoundation().showTopCard().getFigureNumberValue() == cardToMove.getFigureNumberValue() - 1;
+	}
+	
+	public boolean canPushCardInEmptyTableau (CardStack cardStack, Tableau tableau)
+	{
+		return cardStack.showTopCard().getFigureCharValue() == 'K';
 	}
 	
 	private static boolean isSameSuit (Card card1, Card card2)
@@ -189,28 +278,20 @@ public class Game {
 		return card1.getSuitCharValue() == card2.getSuitCharValue();
 	}
 	
-	public boolean canPush (Waste waste, Tableau tableau)
+	public boolean canPushCardInTableau (Tableau tableau, CardStack cardStack)
 	{
-		Card wasteCard;
-		
-		wasteCard = waste.getWaste().showTopCard();
-		
-		return canPushCardInEmptyTableau(wasteCard, tableau) || canPushInTableau (tableau, waste);
-	}
-	
-	private static boolean canPushInTableau (Tableau tableau, Waste waste)
-	{
-        Card wasteCard;
+        Card cardToPush;
         Card tableauCard;
 		
-		wasteCard = waste.getWaste().showTopCard();
+        cardToPush = cardStack.getCardStack().getFirst();
 		tableauCard = tableau.getTableau().showTopCard();
-		return !tableau.isEmpty() && !isSameSuit(wasteCard, tableauCard) && cardToMoveIsNext(tableauCard, wasteCard);
+		return !isSameSuit(cardToPush, tableauCard) && cardToMoveIsNext(tableauCard, cardToPush);
 	}
 	
 	public void turnInTableau(Tableau tableau, int numTableau)
 	{
-		tableaus[numTableau - 1].getTableau().getCardStack().getFirst().setTurned(true);
+		tableau.getTableau().getCardStack().getFirst().setTurned(false);
+		setTableau(tableau, numTableau);
 	}
 	
 	public boolean canTurnInTableau(Tableau tableau, int numTableau)
@@ -237,6 +318,8 @@ public class Game {
 	{
 		int numMaxCardsTableau = NUM_TABLEAUS;
 		int contTableau = 0;
+		
+		tableaus = new Tableau[NUM_TABLEAUS];
 		for(Pile pile : Pile.values())
 		{
 			tableaus[contTableau] = new Tableau(pile);

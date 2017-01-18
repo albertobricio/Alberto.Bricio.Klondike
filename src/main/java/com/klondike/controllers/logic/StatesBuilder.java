@@ -17,7 +17,7 @@ class StatesBuilder {
 	StatesBuilder(Observer observer, Game game, OperationControllerBuilder operationControllerBuilder) {
 		initialState = new InitialState(this, operationControllerBuilder);
 		inGameState = new InGameState(this, operationControllerBuilder);
-		finalState = new FinalState(this, operationControllerBuilder);
+		finalState = new FinalState(this);
 		exitState = new ExitState(this);
 	}
 

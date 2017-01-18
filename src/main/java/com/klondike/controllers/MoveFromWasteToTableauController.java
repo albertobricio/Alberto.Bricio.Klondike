@@ -13,11 +13,26 @@ public class MoveFromWasteToTableauController extends OperationController{
 		subject = new Subject();
 		subject.register(observer);
 	}
-
-	public void start(Game game)
+	
+	public boolean canMove(Game game, int tableauNumber)
 	{
 		assert game != null;
 		
+		if(game.getTableau(tableauNumber).isEmpty())
+		{
+			return game.canPushCardInEmptyTableau(game.getGameWaste().getWaste(), game.getTableau(tableauNumber));
+		}
+		else
+		{
+			return game.canPushCardInTableau(game.getTableau(tableauNumber), game.getGameWaste().getWaste());
+		}
+	}
+
+	public void move(Game game, int tableauNumber)
+	{
+		assert game != null;
+		
+		game.moveToTableau(game.getGameWaste().getWaste(), tableauNumber);
 	}
 
 	@Override
